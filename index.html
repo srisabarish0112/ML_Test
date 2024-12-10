@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Stats & Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #333;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        nav a:hover {
+            background-color: #575757;
+        }
+        .container {
+            padding: 20px;
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        }
+        .hidden {
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #predictionResult {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Housing Stats & Prediction
+    </header>
+
+    <nav>
+        <a href="/descriptive_stats">Descriptive Stats</a>
+        <a href="#" onclick="showPage('prediction')">Model Prediction</a>
+    </nav>
+
+    <div class="container hidden" id="descriptive">
+        <h2>Descriptive Statistics</h2>
+        <div id="descriptiveContent"></div>
+    </div>
+
+    <div class="container hidden" id="prediction">
+        <h2>Model Prediction</h2>
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="oceanProximity">Ocean Proximity:</label>
+                <select id="oceanProximity" required>
+                    <option value="1">Island</option>
+                    <option value="2">Near Ocean</option>
+                    <option value="3">Less than 1 mile from Ocean</option>
+                    <option value="4">Near Bay</option>
+                    <option value="5">Inland</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="totalRooms">Total Rooms:</label>
+                <input type="number" id="totalRooms" placeholder="Enter total number of rooms" required>
+            </div>
+
+            <div class="form-group">
+                <label for="totalBedrooms">Total Bedrooms:</label>
+                <input type="number" id="totalBedrooms" placeholder="Enter total number of bedrooms" required>
+            </div>
+
+            <div class="form-group">
+                <label for="medianIncome">Median Income:</label>
+                <input type="number" id="medianIncome" placeholder="Enter median income" required>
+            </div>
+
+            <div class="form-group">
+                <label for="medianAge">Median Age:</label>
+                <input type="number" id="medianAge" placeholder="Enter median age" required>
+            </div>
+
+            <button type="submit">Predict</button>
+        </form>
+        <div id="predictionResult"></div>
+    </div>
+
+    <script>
+        // Handle navigation
+        function showPage(page) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.add('hidden');
+            });
+            document.getElementById(page).classList.remove('hidden');
+        }
+
+        // Show the prediction page by default
+        showPage('prediction');
+
+        // Handle form submission
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const oceanProximity = document.getElementById('oceanProximity').value;
+            const totalRooms = document.getElementById('totalRooms').value;
+            const totalBedrooms = document.getElementById('totalBedrooms').value;
+            const medianIncome = document.getElementById('medianIncome').value;
+            const medianAge = document.getElementById('medianAge').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ocean_proximity: parseInt(oceanProximity),
+                    total_rooms: parseInt(totalRooms),
+                    total_bedrooms: parseInt(totalBedrooms),
+                    median_income: parseFloat(medianIncome),
+                    median_age: parseFloat(medianAge)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const predictionResult = document.getElementById('predictionResult');
+                predictionResult.innerHTML = `Predicted House Price: $${data.prediction.toLocaleString()}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while making the prediction.');
+            });
+        });
+    </script>
+</body>
+</html>
