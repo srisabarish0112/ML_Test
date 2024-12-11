@@ -16,6 +16,10 @@ This project provides an interface to view descriptive statistics of housing dat
 - Scikit-learn (for machine learning model)
 - Any modern web browser
 
+**Note**: Due to limitations, the house pricing model file cannot be uploaded directly here. You can download the model file from the following Google Drive link:  
+[Download House Pricing Model](https://drive.google.com/file/d/1M1XycMh3nyz0cYFv4NG7VKOt1KLa8nbX/view?usp=sharing)  
+Please place the downloaded model file in the appropriate directory on your system for the app to function properly.
+
 ## Installation
 
 1. **Clone the repository**
@@ -73,9 +77,6 @@ The user can input the following details for a house:
 
 After entering the data and submitting the form, the app will predict the house price using a machine learning model.
 
-**Note**: Due to limitations, the house pricing model file cannot be uploaded directly here. You can download the model file from the following Google Drive link:  
-[Download House Pricing Model](https://drive.google.com/file/d/1M1XycMh3nyz0cYFv4NG7VKOt1KLa8nbX/view?usp=sharing)  
-Please place the downloaded model file in the appropriate directory on your system for the app to function properly.
 
 ## Endpoints
 
